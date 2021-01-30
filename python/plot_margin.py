@@ -8,9 +8,9 @@ y2 = np.cos(x)
 fig, axs = plt.subplots(2)
 # method 4
 # fig, axs = plt.subplots(2, constrained_layout=True)
-axs[0].plot(x, y1)
+axs[0].plot(x, y1, label='Sin')
 axs[0].set_title('Sin')
-axs[1].plot(x, y2)
+axs[1].plot(x, y2, label='Cos')
 axs[1].set_title('Cos')
 
 # method 1
@@ -25,4 +25,9 @@ axs[1].set_title('Cos')
 #     hspace=0.35)
 # method 3
 # plt.subplot_tool()
+
+
+fig.tight_layout()
+plt.subplots_adjust(right=0.6)
+axs[0].legend(loc="upper left", bbox_to_anchor=(1, 1), prop={'size': 8})
 plt.show()

@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib.transforms import Bbox
 import matplotlib.pyplot as plt
 
 
@@ -29,5 +30,19 @@ def on_pick(event):
     fig.canvas.draw()
 
 
+# pixels to scroll per mousewheel event
+d = {"down" : 30, "up" : -30}
+
+
+def func(evt):
+    if leg.contains(evt):
+        bbox = leg.get_bbox_to_anchor()
+        bbox = Bbox.from_bounds(bbox.x0, bbox.y0+d[evt.button], bbox.width, bbox.height)
+        tr = leg.axes.transAxes.inverted()
+        leg.set_bbox_to_anchor(bbox.transformed(tr))
+        fig.canvas.draw_idle()
+
+
+fig.canvas.mpl_connect("scroll_event", func)
 fig.canvas.mpl_connect('pick_event', on_pick)
 plt.show()
