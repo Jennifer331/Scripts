@@ -4,14 +4,13 @@ def epc_dtoh(raw):
     epc = ''
     for num in nums:
         epc = epc + ' ' + '%04x' % num
-    return epc
+    return epc.strip()
 
 
-color_names = ['aqua', 'azure', 'beige', 'black', 'blue', 'brown',
-               'cyan', 'darkblue', 'darkcyan', 'darkgrey', 'darkgreen',
+color_names = ['aqua', 'black', 'blue', 'brown', 'cyan', 'fuchsia', 'darkblue', 'darkcyan', 'darkgrey', 'darkgreen',
                'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
-               'darkorchid', 'darkred', 'darksalmon', 'darkviolet', 'fuchsia',
-               'gold', 'green', 'indigo', 'khaki', 'lightblue', 'lightcyan',
-               'lightgreen', 'lightgrey', 'lightpink', 'lightyellow', 'lime',
+               'darkorchid', 'darkred', 'darksalmon', 'darkviolet',
+               'gold', 'green', 'indigo', 'khaki', 'lightblue',
+               'lightgreen', 'lightgrey', 'lightpink', 'lime',
                'magenta', 'maroon', 'navy', 'olive', 'orange', 'pink', 'purple',
-               'violet', 'red', 'silver', 'white', 'yellow']
+               'violet', 'red', 'silver', 'yellow']
