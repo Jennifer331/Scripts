@@ -3,6 +3,7 @@ import json
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 from pynput import keyboard
+import re
 import socket
 import threading
 from util import epc_dtoh
@@ -16,11 +17,12 @@ frequencies = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 9
                915.75, 916.25, 916.75, 917.25, 917.75, 918.25, 918.75, 919.25, 919.75, 920.25, 920.75, 921.25, 921.75,
                922.25, 922.75, 923.25, 923.75, 924.25, 924.75, 925.25, 925.75, 926.25, 926.75, 927.25]
 
-filters = ('3008 33b2 ddd9 0140 0000 0000', )
+filters = ('3008 33b2 ddd9 0140 0000 0000', '3008 33b2 ddd9 0140 0000 0001')
 filter_mode = True
+marker_adjustable = False
 
 opacity = 0.5
-marker_size = 5
+marker_size = 15
 
 # data
 epcs = set()
@@ -51,9 +53,9 @@ def on_press(key):
     try:
         if key.char == 'c':
             clear()
-        elif key.char == 'a':
+        elif marker_adjustable and key.char == 'a':
             marker_size = max(1, marker_size - 1)
-        elif key.char == 'f':
+        elif marker_adjustable and key.char == 'f':
             marker_size += 1
 
     except AttributeError:
@@ -73,7 +75,9 @@ def receive_data():
             message = s.recv(65536)
             buffer = []
             lines = message.splitlines()
-            if lines[0][0] != ord('[') and len(last_msg) > 0:
+            if message is None or len(message) == 0:
+                print(message)
+            if re.match(b'\[\{"epc"', lines[0]) is None and len(last_msg) > 0:
                 last_msg = last_msg + lines[0]
                 lines.pop(0)
                 buffer = [last_msg]
@@ -81,7 +85,7 @@ def receive_data():
             last_msg = ''
 
             for line in buffer:
-                if line[-1] != ord(']'):
+                if re.match(b'.*\}\]$', line) is None:
                     last_msg = line
                     break
 
