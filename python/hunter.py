@@ -20,6 +20,7 @@ frequencies = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 9
 filters = ('3008 33b2 ddd9 0140 0000 0000', '3008 33b2 ddd9 0140 0000 0001')
 filter_mode = True
 marker_adjustable = False
+show_diff = True
 
 opacity = 0.5
 marker_size = 15
@@ -29,6 +30,11 @@ epcs = set()
 color = {}
 rssi_series = {}
 phase_series = {}
+
+# diff_data
+diff_epc = ['3008 33b2 ddd9 0140 0000 0000', '3008 33b2 ddd9 0140 0000 0001']
+diff_readings = [{'RSSI': {}, 'Phase': {}}, {'RSSI': {}, 'Phase': {}}]
+diff = {'RSSI': {}, 'Phase': {}}
 
 # configuration
 conf = defaultdict(lambda: filter_mode)
@@ -46,6 +52,11 @@ def clear():
 
         # conf.clear()
         view_model_mapping.clear()
+
+        # diff
+        global diff_readings, diff
+        diff_readings = [{'RSSI': {}, 'Phase': {}}, {'RSSI': {}, 'Phase': {}}]
+        diff = {'RSSI': {}, 'Phase': {}}
 
 
 def on_press(key):
@@ -104,9 +115,31 @@ def receive_data():
                             phase_series[e][0].append(tag['channelInMhz'])
                             rssi_series[e][1].append(tag['peakRssiInDbm'])
                             phase_series[e][1].append(tag['phaseAngleInRadians'])
+
+                            if show_diff:
+                                collect_diff(tag, e)
                 except Exception as err:
                     print(line)
                     raise err
+
+
+def collect_diff(tag, epc):
+    if not show_diff:
+        return
+    if epc == diff_epc[0]:
+        i = 0
+    elif epc == diff_epc[1]:
+        i = 1
+    else:
+        return
+
+    channel = tag['channelInMhz']
+    diff_readings[i]['RSSI'][channel] = tag['peakRssiInDbm']
+    diff_readings[i]['Phase'][channel] = tag['phaseAngleInRadians']
+
+    if channel in diff_readings[1]['RSSI'] and channel in diff_readings[0]['RSSI']:
+        diff['RSSI'][channel] = diff_readings[1]['RSSI'][channel] - diff_readings[0]['RSSI'][channel]
+        diff['Phase'][channel] = diff_readings[1]['Phase'][channel] - diff_readings[0]['Phase'][channel]
 
 
 t_receive = threading.Thread(target=receive_data)
@@ -136,6 +169,32 @@ def plot_update(frame_number):
         view_model_mapping[item] = name
         item.set_picker(True)
 
+    if show_diff:
+        plot_diff()
+
+
+def plot_diff():
+    ax1_diff.clear()
+    ax2_diff.clear()
+    ax1_diff.set_title('RSSI Difference')
+    ax1_diff.set_xlim(min(frequencies), max(frequencies))
+    ax2_diff.set_title('Phase Difference')
+    ax2_diff.set_ylim(0, 7)
+    ax2_diff.set_xlim(min(frequencies), max(frequencies))
+    with lock:
+        # rssi = diff['RSSI']
+        # ax1_diff.plot(rssi.keys(), rssi.values())
+        # phase = diff['Phase']
+        # ax2_diff.plot(phase.keys(), phase.values())
+
+        rssi = sorted(diff['RSSI'].items())
+        x, y = zip(*rssi)
+        ax1_diff.plot(x, y)
+
+        phase = sorted(diff['Phase'].items())
+        x, y = zip(*phase)
+        ax2_diff.plot(x, y)
+
 
 def on_pick(event):
     legend = event.artist
@@ -144,13 +203,19 @@ def on_pick(event):
         conf[epc] ^= True
 
 
-fig, axs = plt.subplots(2)
-ax1 = plt.subplot(211)
-ax2 = plt.subplot(212)
+fig = plt.figure(1)
+ax1 = plt.subplot(221)
+ax2 = plt.subplot(222)
 
 fig.canvas.mpl_connect('pick_event', on_pick)
 animation = FuncAnimation(fig, plot_update, interval=10)
 fig.tight_layout()
 plt.subplots_adjust(right=0.7)
+
+# plt.figure(2)
+ax1_diff = plt.subplot(223)
+ax2_diff = plt.subplot(224)
+# plt.tight_layout()
+
 plt.show()
 
