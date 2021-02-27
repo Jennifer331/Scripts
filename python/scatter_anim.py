@@ -10,12 +10,13 @@ phase1 = np.random.uniform(0, 2*np.pi, 50)
 phase2 = np.random.uniform(0, 2*np.pi, 50)
 conf['phase1'] = True
 conf['phase2'] = True
+mark_size = 8
 
 fig, ax = plt.subplots()
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width, box.height * 0.8])
-ax.scatter(frequency, phase1, label='Sample 1')
-ax.scatter(frequency, phase2, label='Sample 2')
+ax.scatter(frequency, phase1, mark_size, label='Sample 1')
+ax.scatter(frequency, phase2, mark_size, label='Sample 2')
 
 
 leg = ax.legend(fancybox=True, shadow=True, bbox_to_anchor=(0.2, 1.2))
@@ -46,8 +47,8 @@ def update(frame_number):
     plt.title('Trial ' + str(frame_number))
     # ax.scatter(frequency, phase1, label='Sample 1', alpha=conf['phase1'])
     # ax.scatter(frequency, phase2, label='Sample 2', alpha=conf['phase2'])
-    line1 = ax.scatter(frequency, phase1, label='Sample 1')
-    line2 = ax.scatter(frequency, phase2, label='Sample 2')
+    line1 = ax.scatter(frequency, phase1, mark_size, label='Sample 1')
+    line2 = ax.scatter(frequency, phase2, mark_size, label='Sample 2')
     line1.set_visible(conf['phase1'])
     line2.set_visible(conf['phase2'])
 
