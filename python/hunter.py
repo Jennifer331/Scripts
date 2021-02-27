@@ -20,7 +20,7 @@ frequencies = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 9
 filters = ('3008 33b2 ddd9 0140 0000 0000', '3008 33b2 ddd9 0140 0000 0001')
 filter_mode = True
 marker_adjustable = False
-show_diff = True
+show_diff = False
 
 opacity = 0.5
 marker_size = 15
@@ -179,13 +179,10 @@ def plot_diff():
     ax1_diff.set_title('RSSI Difference')
     ax1_diff.set_xlim(min(frequencies), max(frequencies))
     ax2_diff.set_title('Phase Difference')
-    ax2_diff.set_ylim(0, 7)
     ax2_diff.set_xlim(min(frequencies), max(frequencies))
     with lock:
-        # rssi = diff['RSSI']
-        # ax1_diff.plot(rssi.keys(), rssi.values())
-        # phase = diff['Phase']
-        # ax2_diff.plot(phase.keys(), phase.values())
+        if 0 == len(diff['RSSI']):
+            return
 
         rssi = sorted(diff['RSSI'].items())
         x, y = zip(*rssi)
@@ -203,19 +200,19 @@ def on_pick(event):
         conf[epc] ^= True
 
 
-fig = plt.figure(1)
-ax1 = plt.subplot(221)
-ax2 = plt.subplot(222)
+fig = plt.figure()
+
+ax1 = plt.subplot(2, 2 if show_diff else 1, 1)
+ax2 = plt.subplot(2, 2 if show_diff else 1, 2)
 
 fig.canvas.mpl_connect('pick_event', on_pick)
 animation = FuncAnimation(fig, plot_update, interval=10)
 fig.tight_layout()
 plt.subplots_adjust(right=0.7)
 
-# plt.figure(2)
-ax1_diff = plt.subplot(223)
-ax2_diff = plt.subplot(224)
-# plt.tight_layout()
+if show_diff:
+    ax1_diff = plt.subplot(223)
+    ax2_diff = plt.subplot(224)
 
 plt.show()
 
