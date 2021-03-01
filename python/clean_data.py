@@ -49,10 +49,14 @@ def mean(df):
 
 def peak(group, col):
     variance = group.var()[col]
-    if math.isnan(variance) or variance == 0:
+    if math.isnan(variance) or variance < 1e-08:
         return group[col].iloc[0]
-
-    density = gaussian_kde(group[col])
+    try:
+        density = gaussian_kde(group[col])
+    except np.linalg.LinAlgError:
+        print(group[col])
+        print(group.var()[col])
+        raise
     ind = np.linspace(group[col].min(), group[col].max(), 200)
     return ind[np.argsort(density(ind))[-1]]
 
