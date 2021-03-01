@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import gaussian_kde
@@ -13,6 +14,16 @@ def import_data():
     return df_filtered
 
 
+def import_data(filename, epc='E280 1160 6000 0207 A652 516D'):
+    df = pd.read_csv(filename, usecols=['CHANNEL', 'EPC', 'PHASE', 'RSSI'])
+    return df.groupby('EPC').get_group(epc).drop(columns=['EPC']).sort_values(by=['CHANNEL'])
+
+
+def unfold(df):
+    df['CHANNEL'], df['PHASE'] = np.unwrap([df['CHANNEL'], 2 * df['PHASE']], np.pi)
+    df['Phase'] /= 2
+
+
 def kde_peak(df):
     grouped = df.groupby('CHANNEL')
     channel, rssi, phase = [], [], []
@@ -25,8 +36,20 @@ def kde_peak(df):
     return pd.DataFrame(data=d)
 
 
+def mean(df):
+    grouped = df.groupby('CHANNEL')
+    channel, rssi, phase = [], [], []
+    for name, group in grouped:
+        channel.append(name)
+        rssi.append(group['RSSI'].mean())
+        phase.append(peak(group, 'PHASE'))
+    d = {'CHANNEL': channel, 'RSSI': rssi, 'PHASE': phase}
+    return pd.DataFrame(data=d)
+
+
 def peak(group, col):
-    if 1 == len(group[col]):
+    variance = group.var()[col]
+    if math.isnan(variance) or variance == 0:
         return group[col].iloc[0]
 
     density = gaussian_kde(group[col])
