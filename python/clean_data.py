@@ -24,14 +24,15 @@ def unfold(df):
     df['Phase'] /= 2
 
 
-def kde_peak(df):
+def kde_peak(df, unwrap=True):
     grouped = df.groupby('CHANNEL')
     channel, rssi, phase = [], [], []
     for name, group in grouped:
         channel.append(name)
         rssi.append(peak(group, 'RSSI'))
         phase.append(peak(group, 'PHASE'))
-    phase = np.unwrap(phase, np.pi)
+    if unwrap:
+        phase = np.unwrap(phase, np.pi)
     d = {'CHANNEL': channel, 'RSSI': rssi, 'PHASE': phase}
     return pd.DataFrame(data=d)
 
