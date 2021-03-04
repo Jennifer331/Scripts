@@ -9,6 +9,8 @@ import clean_data
 import plot_helper
 import time
 
+import data_manager as dm
+
 dists = [12, 13, 14, 15, 18, 21, 24, 27, 30, 36, 39, 42, 78, 81, 84, 87, 90, 93]
 # dists = [12]
 folder = 'D:\\Atom\\exp\\20210218'
@@ -40,11 +42,18 @@ def calculate_diff(dfs):
         i += 1
 
     diff_phase, diff_rssi = {}, {}
-    for channel in phase[0]:
-        if channel not in phase[1]:
+    for channel in dm.channels:
+        if channel not in phase[0] or channel not in phase[1]:
+            diff_phase[channel] = np.NaN
+            diff_rssi[channel] = np.NaN
             continue
         diff_phase[channel] = phase[1][channel] - phase[0][channel]
         diff_rssi[channel] = rssi[1][channel] - phase[0][channel]
+    # for channel in phase[0]:
+    #     if channel not in phase[1]:
+    #         continue
+    #     diff_phase[channel] = phase[1][channel] - phase[0][channel]
+    #     diff_rssi[channel] = rssi[1][channel] - phase[0][channel]
 
     return diff_phase, diff_rssi
 
@@ -90,6 +99,20 @@ def plot_liquid_empty_diff():
     pdf.close()
 
 
+def diff_corr():
+    df = pd.DataFrame()
+    for dist in dists:
+        df1 = import_and_clean(os.path.join(folder, str(dist) + 'cm_empty.csv'), epc)
+        df2 = import_and_clean(os.path.join(folder, str(dist) + 'cm_water.csv'), epc)
+
+        if df1.empty or df2.empty:
+            return
+
+        diff_phase, diff_rssi = calculate_diff([df1, df2])
+        df[dist] = diff_phase.values()
+    df.corr()
+
+
 def plot_diff():
     cnt = len(dists) - 1
     cols = 2
@@ -112,7 +135,8 @@ def plot_diff():
 if __name__ == '__main__':
     t_start = time.time()
     # plot_diff()
-    plot_liquid_empty_diff()
+    # plot_liquid_empty_diff()
+    diff_corr()
     t_end = time.time()
     print('%2fs passed' % (t_end - t_start))
 
