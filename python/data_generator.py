@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from scipy import constants
 
+import data_manager as dm
 import io_helper
 
 channels = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 906.75, 907.25, 907.75, 908.25, 908.75,
@@ -13,7 +14,6 @@ channels = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 906.
 dists = [12, 13, 14, 15, 18, 21, 24, 27, 30, 36, 39, 42, 78, 81, 84, 87, 90, 93]
 dists = [1, 2, 3, 4, 5, 8, 11, 14, 17, 20, 26, 29, 32, 68, 71, 74, 77, 80, 83, 92, 100, 108, 135, 140, 145, 155, 165,
          175, 185, 240]
-folder = 'd:\\Atom\\python\\test_data\\empty'
 
 
 def generate():
@@ -22,14 +22,13 @@ def generate():
     f = []
     d = []
     for dist in dists:
-        dist /= 100
         for channel in channels:
             f.append(channel)
             d.append(dist)
-            phase.append(calc_phase(channel, dist))
-            rssi.append(calc_rssi(channel, dist))
+            phase.append(calc_phase(channel * 10**6, dist/100))
+            rssi.append(calc_rssi(channel * 10**6, dist/100))
     df = pd.DataFrame(data={'DISTANCE': d, 'CHANNEL': f, 'PHASE': phase, 'RSSI': rssi})
-    io_helper.to_csv(df, folder, 'empty_test.csv')
+    io_helper.to_csv(df, dm.folder_test, dm.file_test)
 
 
 def generate_dist():
@@ -42,12 +41,10 @@ def generate_dist():
 
 
 def calc_phase(f, d):
-    f *= 10**6
     return -(2*d*math.tau*f/constants.speed_of_light) % math.tau
 
 
 def calc_rssi(f, d, p_reader=32.5, g_reader=9, g_tag=0, bs_trans_loss=5):
-    f *= 10**6
     return p_reader + 2*g_reader + 2*g_tag + 40*math.log(constants.speed_of_light/(4*math.pi*d*f), 10) - bs_trans_loss
 
 

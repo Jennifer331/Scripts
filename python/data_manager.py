@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from scipy.io import savemat
 
 folder_liquid = 'd:\\Atom\\exp\\20210218'
 folder_test = 'd:\\Atom\\python\\test_data\\empty'
@@ -15,15 +16,27 @@ channels = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 906.
             922.25, 922.75, 923.25, 923.75, 924.25, 924.75, 925.25, 925.75, 926.25, 926.75, 927.25]
 dists = [12, 13, 14, 15, 18, 21, 24, 27, 30, 36, 39, 42, 78, 81, 84, 87, 90, 93]
 
+clean_files = ['nongfu_empty', 'nongfu_water', 'nongfu_vinegar', 'nongfu_oil']
 
-def import_test_data():
+
+def import_test_data(convert=False):
     df = pd.read_csv(os.path.join(folder_test, file_test))
-    df['CHANNEL'] *= 10**6
+    if convert:
+        df['DISTANCE'] /= 100
+        df['CHANNEL'] *= 10**6
     return df
 
 
-def import_clean_data(filename):
+def import_clean_data(filename, convert=False):
     df = pd.read_csv(os.path.join(folder_clean, filename))
-    df['DISTANCE'] /= 100
-    df['CHANNEL'] *= 10**6
+    if convert:
+        df['DISTANCE'] /= 100
+        df['CHANNEL'] *= 10**6
     return df
+
+
+def export_mat(df, filename, folder=folder_clean):
+    mat_dict = {}
+    for col in df.columns:
+        mat_dict[col] = list(df[col])
+    savemat(os.path.join(folder, filename), mat_dict)

@@ -104,19 +104,45 @@ def clean_white_empty():
         dis = ''.join([n for n in dis_sub_str if n.isdigit()])
         try:
             df = pd.read_csv(file).groupby('EPC').get_group(epc).drop(columns=['EPC'])
-            df = clean_data.kde_peak(df, unwrap=True)
+            df = clean_data.kde_peak(df, unwrap=False)
             df.insert(0, 'DISTANCE', int(dis) - 10)
             li.append(df)
         except KeyError:
             print('read file ' + file + ' raise KeyError')
     df = pd.concat(li)
 
-    io_helper.to_csv(df, folder_clean, file_clean_unwrap)
+    io_helper.to_csv(df, folder_clean, 'white_empty.csv')
+
+
+def clean_nongfu():
+    epc = '3008 33B2 DDD9 0140 0000 0000'
+    folder_nongfu = 'd:\\Atom\\exp\\20210220'
+    # filename = '[0-9]*_empty.csv'
+    # filename = '[0-9]*_vinegar.csv'
+    # filename = '[0-9]*_water.csv'
+    filename = '[0-9]*_oil.csv'
+    pattern = '\d*cm'
+
+    li = []
+    for file in glob.glob(os.path.join(folder_nongfu, filename)):
+        dis_sub_str = re.search(pattern, file).group(0)
+        dis = ''.join([n for n in dis_sub_str if n.isdigit()])
+        try:
+            df = pd.read_csv(file).groupby('EPC').get_group(epc).drop(columns=['EPC'])
+            df = clean_data.kde_peak(df, unwrap=False)
+            df.insert(0, 'DISTANCE', int(dis) - 10)
+            li.append(df)
+        except KeyError:
+            print('read file ' + file + ' raise KeyError')
+    df = pd.concat(li)
+
+    io_helper.to_csv(df, folder_clean, 'nongfu_oil.csv')
 
 
 if __name__ == '__main__':
     # plot()
     # plot_3d()
     # fit()
-    # clean_white_empty()
-    plot_theoretical_diff()
+    clean_white_empty()
+    # plot_theoretical_diff()
+    # clean_nongfu()
