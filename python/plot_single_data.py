@@ -16,13 +16,14 @@ if __name__ == '__main__':
         df = import_data(filename)
         plt.figure(i); i += 1
 
-        df['CHANNEL'], df['PHASE'] = np.unwrap([df['CHANNEL'], 2*df['PHASE']], np.pi)
+        # df['CHANNEL'], df['PHASE'] = np.unwrap([df['CHANNEL'], 2*df['PHASE']], np.pi)
+        # df['PHASE'] /= 2
 
         plt.subplot(221)
         plt.scatter(df['CHANNEL'], df['RSSI'])
 
         plt.subplot(222)
-        plt.scatter(df['CHANNEL'], df['PHASE']/2)
+        plt.scatter(df['CHANNEL'], df['PHASE'])
 
         cleaned_df = mean(df)
 

@@ -21,7 +21,7 @@ def import_data():
         dis = ''.join([n for n in dis_sub_str if n.isdigit()])
         df = pd.read_csv(file)
         df_filtered = df.loc[df['EPC'] == epc]
-        df_filtered.insert(len(df_filtered.columns), 'DISTANCE', np.repeat(int(dis), len(df_filtered)))
+        df_filtered.insert(len(df_filtered.columns), 'DISTANCE', int(dis)).drop(columns=['EPC'])
         li.append(df_filtered)
     return pd.concat(li)
 
