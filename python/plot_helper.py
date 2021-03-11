@@ -27,28 +27,22 @@ def scatter_3d_multi(dfs, names):
     plt.show()
 
 
-def plot_mr_dist_rssi(liquid, d, marker='o', label=''):
+def plot_mr_dist(liquid, d, col='RSSI', marker='o', label=''):
     d *= 100
     df = dm.import_clean_data('mr_%s_2d_cus_unwrap.csv' % liquid, folder=dm.folder_clean_mr)
     g = df.groupby('DISTANCE').get_group(d)
-    plt.scatter(g['CHANNEL'], g['RSSI'], marker=marker, label=label)
+    plt.scatter(g['CHANNEL'], g[col], marker=marker, label=label)
 
 
-def plot_mr_freq_rssi(liquid, f, marker='o', label=''):
+def plot_mr_freq(liquid, f, col='RSSI', marker='o', label=''):
     f /= 10**6
     df = dm.import_clean_data('mr_%s_2d_cus_unwrap.csv' % liquid, folder=dm.folder_clean_mr)
     g = df.groupby('CHANNEL').get_group(f)
-    plt.scatter(g['DISTANCE'], g['RSSI'], marker=marker, label=label)
+    plt.scatter(g['DISTANCE'], g[col], marker=marker, label=label)
 
 
-def plot_lab_freq_rssi(liquid, f, marker='o', label=''):
+def plot_lab_freq(liquid, f, col='RSSI', marker='o', label=''):
     f /= 10**6
     df = dm.import_clean_data('nongfu_%s_2d_unwrap.csv' % liquid, folder=dm.folder_clean)
     g = df.groupby('CHANNEL').get_group(f)
-    plt.scatter(g['DISTANCE'], g['RSSI'], marker=marker, label=label)
-
-
-plot_lab_freq_rssi('water', 902.75*10**6, '*', 'water')
-plot_lab_freq_rssi('empty', 902.75*10**6, '+', 'empty')
-plt.legend()
-plt.show()
+    plt.scatter(g['DISTANCE'], g[col], marker=marker, label=label)

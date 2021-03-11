@@ -8,7 +8,7 @@ def atten_coeff(f=902.75*10**6, permittivity=80, loss_tan=0.05, permeability=1):
 
 
 def attenuate(d, f=902.75*10**6, permittivity=80, loss_tan=0.05, permeability=1):
-    return np.e**(d*-atten_coeff())
+    return np.e**(d*-atten_coeff(f, permittivity, loss_tan, permeability))
 
 
 def trans_coeff(z_from, z_to):

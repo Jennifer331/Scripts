@@ -5,7 +5,6 @@ import pandas as pd
 from scipy import constants
 
 import data_manager as dm
-import io_helper
 
 channels = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 906.75, 907.25, 907.75, 908.25, 908.75,
             909.25, 909.75, 910.25, 910.75, 911.25, 911.75, 912.25, 912.75, 913.25, 913.75, 914.25, 914.75, 915.25,
@@ -28,7 +27,7 @@ def generate():
             phase.append(calc_phase(channel * 10**6, dist/100))
             rssi.append(calc_rssi(channel * 10**6, dist/100))
     df = pd.DataFrame(data={'DISTANCE': d, 'CHANNEL': f, 'PHASE': phase, 'RSSI': rssi})
-    io_helper.to_csv(df, dm.folder_test, dm.file_test)
+    dm.to_csv(df, dm.folder_test, dm.file_test)
 
 
 def generate_dist():
@@ -42,6 +41,10 @@ def generate_dist():
 
 def calc_phase(f, d):
     return -(2*d*math.tau*f/constants.speed_of_light) % math.tau
+
+
+def calc_phase_unwrap(f, d):
+    return -(2*d*math.tau*f/constants.speed_of_light)
 
 
 def calc_rssi(f, d, p_reader=32.5, g_reader=9, g_tag=0, bs_trans_loss=5):
