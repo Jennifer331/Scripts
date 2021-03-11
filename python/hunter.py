@@ -9,6 +9,9 @@ import threading
 from util import epc_dtoh
 from util import color_names
 
+import configparser
+import ast
+
 HOST = 'localhost'
 PORT = 8002
 
@@ -17,7 +20,21 @@ frequencies = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 9
                915.75, 916.25, 916.75, 917.25, 917.75, 918.25, 918.75, 919.25, 919.75, 920.25, 920.75, 921.25, 921.75,
                922.25, 922.75, 923.25, 923.75, 924.25, 924.75, 925.25, 925.75, 926.25, 926.75, 927.25]
 
-filters = ('3008 33b2 ddd9 0140 0000 0000', '3008 33b2 ddd9 0140 0000 0001')
+
+lock = threading.Lock()
+
+
+def reload():
+    global filters
+    with lock:
+        config = configparser.ConfigParser()
+        config.read('config.txt')
+
+        filters = tuple(ast.literal_eval(config.get('SHOW', 'epc')))
+
+
+filters = ('3008 33b2 ddd9 0140 0000 0005', '3008 33b2 ddd9 0140 0000 0001')
+reload()
 filter_mode = True
 marker_adjustable = False
 show_diff = False
@@ -39,8 +56,6 @@ diff = {'RSSI': {}, 'Phase': {}}
 # configuration
 conf = defaultdict(lambda: filter_mode)
 view_model_mapping = {}
-
-lock = threading.Lock()
 
 
 def clear():
@@ -64,6 +79,8 @@ def on_press(key):
     try:
         if key.char == 'c':
             clear()
+        elif key.char == 'r':
+            reload()
         elif marker_adjustable and key.char == 'a':
             marker_size = max(1, marker_size - 1)
         elif marker_adjustable and key.char == 'f':
@@ -180,6 +197,7 @@ def plot_diff():
     ax1_diff.set_xlim(min(frequencies), max(frequencies))
     ax2_diff.set_title('Phase Difference')
     ax2_diff.set_xlim(min(frequencies), max(frequencies))
+    ax2_diff.set_ylim(-1, 0)
     with lock:
         if 0 == len(diff['RSSI']):
             return
