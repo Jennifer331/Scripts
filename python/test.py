@@ -1,9 +1,7 @@
-import csv
-x = [914.75, 914.25, 924.75, 909.75, 905.75, 927.25, 913.25, 913.75, 922.75, 918.25, 920.25, 926.75, 916.75, 917.25, 909.25, 907.75, 908.75, 917.75, 910.25, 915.75, 903.75, 920.75, 911.75, 902.75, 922.25, 906.25, 921.25, 919.25, 904.25, 903.25, 925.75, 912.25, 925.25, 926.25, 905.25, 912.75, 915.25, 921.75, 918.75, 911.25, 923.25, 916.25, 906.75, 924.25, 904.75, 907.25, 919.75, 908.25, 910.75, 923.75]
-with open('D:\\Atom\\test.csv', 'r') as fin:
-    with open('D:\\Atom\\test2.csv', 'w') as fout:
-        reader = csv.reader(fin)
-        writer = csv.writer(fout)
-        for record in reader:
-            record[2] = x[int(record[2]) - 1]
-            writer.writerow(record)
+import glob
+import os
+
+
+def file_regex_test(folder, file):
+    for file in glob.glob(os.path.join(folder, file)):
+        print(file)

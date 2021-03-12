@@ -7,9 +7,9 @@ import pandas as pd
 import time
 
 
-def import_data(folder, epc):
+def import_data(folder, epc, pattern='*.csv'):
     d = {}
-    for filename in glob.glob(os.path.join(folder, '*.csv')):
+    for filename in glob.glob(os.path.join(folder, pattern)):
         try:
             df = pd.read_csv(filename).groupby('EPC').get_group(epc).drop(columns=['EPC', 'TIME'])
             d[filename[:-4]] = df
@@ -19,7 +19,7 @@ def import_data(folder, epc):
     return d
 
 
-def plot(data, cols=5):
+def plot(data, cols=5, output='liquids_raw'):
     cnt = len(data)
     rows = math.ceil(cnt / cols)
     fig = plt.figure(figsize=(50, 100), constrained_layout=True)
@@ -40,9 +40,13 @@ def plot(data, cols=5):
 
         i += 1
 
-    pdf = PdfPages('liquids_raw.pdf')
+    pdf = PdfPages('d:\\atom\\python\\plot\\%s.pdf' % output)
     pdf.savefig()
     pdf.close()
+
+
+def batch_plot_folder(folder, epc, pattern='*.csv', cols=5, output='batch_plot_folder'):
+    plot(import_data(folder, epc, pattern), cols, output=output)
 
 
 if __name__ == '__main__':

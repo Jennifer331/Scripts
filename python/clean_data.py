@@ -1,8 +1,14 @@
+import glob
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import re
 from scipy.stats import gaussian_kde
+
+import data_manager as dm
+import unfold as unfold_helper
 
 
 def import_data():
@@ -61,6 +67,35 @@ def peak(group, col):
         raise
     ind = np.linspace(group[col].min(), group[col].max(), 200)
     return ind[np.argsort(density(ind))[-1]]
+
+
+def clean_merge_dists(folder_i, file, epc, folder_o, label, dist_off=0):
+    pattern = '\d*cm'
+
+    li = []
+    for file in glob.glob(os.path.join(folder_i, file)):
+        dis_sub_str = re.search(pattern, file).group(0)
+        dis = ''.join([n for n in dis_sub_str if n.isdigit()])
+        try:
+            df = pd.read_csv(file).groupby('EPC').get_group(epc).drop(columns=['EPC'])
+            df = kde_peak(df)
+            df.insert(0, 'DISTANCE', int(dis)+dist_off)
+            li.append(df)
+        except KeyError:
+            print('read file' + file + ' raise KeyError')
+
+    df = pd.concat(li)
+    dm.to_csv(df, folder_o, '%s_kde.csv' % label)
+    dm.export_mat(df, '%s_kde.mat' % label, folder=folder_o)
+
+
+def unwrap(folder_i, file, folder_o, label):
+    df = dm.import_clean_data(file, folder=folder_i, convert=True)
+    df_unwrap = unfold_helper.unfold(df)
+    df_unwrap['DISTANCE'] *= 100
+    df_unwrap['CHANNEL'] /= 10**6
+    dm.to_csv(df_unwrap, folder_o, '%s_2d_cus_unwrap.csv' % label)
+    dm.export_mat(df_unwrap, '%s_2d_cus_unwrap.mat' % label, folder=folder_o)
 
 
 if __name__ == '__main__':
