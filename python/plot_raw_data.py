@@ -80,7 +80,7 @@ def plot_group_by(frame, genre='scatter', grp_col='CHANNEL', plt_cols=5,
 
 
 def export(filename):
-    pdf = PdfPages(filename + '.pdf')
+    pdf = PdfPages('d:\\atom\\python\\plot\\%s.pdf' % filename)
     pdf.savefig()
     pdf.close()
 

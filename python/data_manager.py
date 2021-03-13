@@ -1,11 +1,14 @@
+import glob
 import os
 import pandas as pd
+import re
 from scipy.io import savemat
 
 folder_liquid = 'd:\\Atom\\exp\\20210218'
 folder_test = 'd:\\Atom\\python\\test_data\\empty'
 folder_clean = 'd:\\Atom\\python\\data\\cleaned'
 folder_clean_mr = 'd:\\Atom\\python\\data\\cleaned\\mr'
+folder_clean_open = 'd:\\Atom\\python\\data\\cleaned\\open'
 folder_mr = 'd:\\Atom\\exp\\20210307'
 file_test = 'empty_test.csv'
 file_clean_wrap = 'white_empty_wrap.csv'
@@ -48,6 +51,23 @@ def import_from_file(filename, epc):
     except KeyError:
         df = pd.DataFrame(columns=['CHANNEL', 'PHASE', 'RSSI'])
     return df
+
+
+def import_from_folder(folder_i, file, epc, dist_off=0):
+    pattern = '\d*cm'
+
+    li = []
+    for file in glob.glob(os.path.join(folder_i, file)):
+        dis_sub_str = re.search(pattern, file).group(0)
+        dis = ''.join([n for n in dis_sub_str if n.isdigit()])
+        try:
+            df = pd.read_csv(file).groupby('EPC').get_group(epc).drop(columns=['EPC'])
+            df.insert(0, 'DISTANCE', int(dis)+dist_off)
+            li.append(df)
+        except KeyError:
+            print('read file' + file + ' raise KeyError')
+
+    return pd.concat(li)
 
 
 def to_csv(df, folder, filename):
