@@ -82,7 +82,12 @@ def clean_merge_dists(folder_i, file, epc, folder_o, label, dist_off=0):
             df.insert(0, 'DISTANCE', int(dis)+dist_off)
             li.append(df)
         except KeyError:
-            print('read file' + file + ' raise KeyError')
+            print('read file %s raise KeyError' % file)
+        except pd.errors.EmptyDataError:
+            print('read file %s raise EmptyDataError' % file)
+        except:
+            print('file ' + file)
+            raise
 
     df = pd.concat(li)
     dm.to_csv(df, folder_o, '%s_kde.csv' % label)
