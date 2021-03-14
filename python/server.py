@@ -10,4 +10,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         print('Connected by', addr)
         while True:
             data = conn.recv(1024)
+            print('receive:', data)
             conn.sendall(data)
