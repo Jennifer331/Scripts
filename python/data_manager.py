@@ -10,11 +10,28 @@ folder_clean = 'd:\\Atom\\python\\data\\cleaned'
 folder_clean_mr = 'd:\\Atom\\python\\data\\cleaned\\mr'
 folder_clean_open = 'd:\\Atom\\python\\data\\cleaned\\open'
 folder_mr = 'd:\\Atom\\exp\\20210307'
+folder_open = 'd:\\Atom\\exp\\20210313'
+folder_open_test = 'D:\\Atom\\python\\data\\test'
 folder_templates = 'D:\\Atom\\python\\data\\templates'
+folder_log = 'D:\\Atom\\python\\data\\log'
 file_test = 'empty_test.csv'
 file_clean_wrap = 'white_empty_wrap.csv'
 file_clean_unwrap = 'white_empty_unwrap.csv'
+file_summary = 'log_summary.csv'
+
+epc = {'liquid': '3008 33B2 DDD9 0140 0000 0000',
+       'water': '3008 33B2 DDD9 0140 0000 0020',
+       'empty': '3008 33B2 DDD9 0140 0000 0030',
+       'oil2': '3008 33B2 DDD9 0140 0000 0040',
+       'vinegar': '3008 33B2 DDD9 0140 0000 0060',
+       'water2': '3008 33B2 DDD9 0140 0000 0080'}
+
 epc_liquid = '3008 33B2 DDD9 0140 0000 0000'
+epc_water = '3008 33B2 DDD9 0140 0000 0020'
+epc_empty = '3008 33B2 DDD9 0140 0000 0030'
+epc_oil = '3008 33B2 DDD9 0140 0000 0040'
+epc_vinegar = '3008 33B2 DDD9 0140 0000 0060'
+epc_water2 = '3008 33B2 DDD9 0140 0000 0080'
 
 channels = [902.75, 903.25, 903.75, 904.25, 904.75, 905.25, 905.75, 906.25, 906.75, 907.25, 907.75, 908.25, 908.75,
             909.25, 909.75, 910.25, 910.75, 911.25, 911.75, 912.25, 912.75, 913.25, 913.75, 914.25, 914.75, 915.25,
@@ -26,11 +43,17 @@ dists_mr = [2,   8,  14,  20,  26,  32,  38,  44,  50,  56,  62,  68,  74,  80, 
 
 clean_files = ['nongfu_empty', 'nongfu_water', 'nongfu_vinegar', 'nongfu_oil']
 
-epc_liquid = '3008 33B2 DDD9 0140 0000 0000'
+
+def import_static_test_data(folder, filename, convert=False):
+    df = pd.read_csv(os.path.join(folder, filename), usecols=['MATERIAL', 'DISTANCE', 'CHANNEL', 'PHASE', 'RSSI'])
+    if convert:
+        df['DISTANCE'] /= 100
+        df['CHANNEL'] *= 10**6
+    return df
 
 
-def import_test_data(convert=False):
-    df = pd.read_csv(os.path.join(folder_test, file_test))
+def import_dynamic_test_data(folder, filename, convert=False):
+    df = pd.read_csv(os.path.join(folder, filename), usecols=['MATERIAL', 'CHANNEL', 'PHASE', 'RSSI'])
     if convert:
         df['DISTANCE'] /= 100
         df['CHANNEL'] *= 10**6
@@ -83,3 +106,11 @@ def export_mat(df, filename, folder=folder_clean):
     for col in df.columns:
         mat_dict[col] = list(df[col])
     savemat(os.path.join(folder, filename), mat_dict)
+
+
+def get_templates(func='cubic'):
+    templates = {}
+    with pd.HDFStore('./templates/open_%s_tmplt.h5' % func) as store:
+        for key in store.keys():
+            templates[key[1:]] = store.get(key)
+    return templates
