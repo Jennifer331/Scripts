@@ -9,6 +9,9 @@ import data_manager as dm
 import rfid_liquid_classification as classifier
 import test
 
+w_r = classifier.w_r
+w_p = classifier.w_p
+
 
 def format_static_test_data():
     static_test_files = 'test_*cm.csv'
@@ -155,17 +158,23 @@ def test_dist1_data():
             d_phase = np.full([m, n], 0)
             for i in range(len(group2)):
                 s = group2.iloc[i]
-                d_r, d_p = classifier.dist1_to_any(s['RSSI'], s['PHASE'], s['CHANNEL'], t)
+                d_r, d_p = classifier.distance_by_position(s['RSSI'], s['PHASE'], s['CHANNEL'], t)
                 d_rssi = np.add(d_rssi, d_r)
                 d_phase = np.add(d_phase, d_p)
-                d = np.add(d_rssi, d_phase)
 
+            d = np.add(w_r*d_rssi, w_p*d_phase)
             d_min = np.min(d, 1)
+            d_argmin = np.argmin(d, 1)
             guess = np.argmin(d_min)
-            guess_index = np.argmin(d, 1) + 30
+            guess_index = np.argmin(d, 1)
 
             result = (keys[guess] == name)
-            print('result: %s, distance: %s, guess index: %s' % (result, str(d_min), guess_index))
+            print('result: %s, guess index: %s\n distance: %s\nrssi distance: %s\nphase distance: %s' %
+                  (result, guess_index,
+                   str(d_min),
+                   str(d_rssi[list(np.arange(m)), np.argmin(d, 1)]),
+                   str(d_phase[list(np.arange(m)), np.argmin(d, 1)])))
+
             # rank_r = d_rssi.argsort()
             # rank_r = rank_r.argsort()
             # result_p = (keys[guess] == name)

@@ -110,7 +110,7 @@ def export_mat(df, filename, folder=folder_clean):
 
 def get_templates(func='cubic'):
     templates = {}
-    with pd.HDFStore('./templates/open_%s_tmplt.h5' % func) as store:
+    with pd.HDFStore('d:\\atom\\python\\templates\\open_%s_tmplt.h5' % func) as store:
         for key in store.keys():
             templates[key[1:]] = store.get(key)
     return templates
