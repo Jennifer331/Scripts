@@ -7,7 +7,6 @@ import re
 
 import data_manager as dm
 import rfid_liquid_classification as classifier
-import test
 
 w_r = classifier.w_r
 w_p = classifier.w_p
@@ -95,91 +94,45 @@ def test_random_batch_data(genre='static'):
         f.close()
 
 
-def test_dist_data():
-    # ti = datetime.datetime.now().strftime('%H_%M_%S')
-    # folder = os.path.join(dm.folder_log, 'static_%s' % ti)
-    # os.makedirs(folder)
-    # f_log = open(os.path.join(folder, 'log_%s.txt' % ti), 'w')
-
-    df = dm.import_static_test_data(dm.folder_open_test, 'open_test_data_static.csv')
-    t = dm.get_templates()
-    keys = list(t.keys())
-    print(keys)
-    for name, group in df.groupby('MATERIAL'):
-        print('\n----------------------------Material: %s----------------------------' % name)
-        for name2, group2 in group.groupby('DISTANCE'):
-            print('-----------Distance: %d, Sample: %d-----------' % (name2, len(group2)))
-            d_rssi = np.full(4, 0)
-            d_phase = np.full(4, 0)
-            for i in range(len(group2)):
-                s = group2.iloc[i]
-                d_r, d_p = classifier.dist_to_any(s['RSSI'], s['PHASE'], s['CHANNEL'], t)
-                d_rssi = np.add(d_rssi, d_r)
-                d_phase = np.add(d_phase, d_p)
-
-            result_r = (keys[np.argmin(d_rssi)] == name)
-            rank_r = d_rssi.argsort()
-            rank_r = rank_r.argsort()
-            result_p = (keys[np.argmin(d_phase)] == name)
-            rank_p = d_phase.argsort()
-            rank_p = rank_p.argsort()
-
-            print('d_rssi: %s%s, %r\nd_phase: %s%s, %r' % (str(rank_r), str(d_rssi), result_r, str(rank_p), str(d_phase), result_p))
-
-
 def batch_test():
     g = ['dynamic', 'static']
     for i in range(100):
         test_random_batch_data(genre=g[np.random.randint(2)])
 
 
-# test_dist_data()
-# test_random_batch_data()
+def test_pos_by_pos():
+    df_test = dm.import_static_test_data(dm.folder_open_test, 'open_test_data_static.csv')
+    tmplts = dm.get_templates()
 
-
-def test_dist1_data():
-    # ti = datetime.datetime.now().strftime('%H_%M_%S')
-    # folder = os.path.join(dm.folder_log, 'static_%s' % ti)
-    # os.makedirs(folder)
-    # f_log = open(os.path.join(folder, 'log_%s.txt' % ti), 'w')
-
-    df = dm.import_static_test_data(dm.folder_open_test, 'open_test_data_static.csv')
-    t = dm.get_templates()
-    keys = list(t.keys())
-    print(keys)
-    for name, group in df.groupby('MATERIAL'):
-        print('\n----------------------------Material: %s----------------------------' % name)
-        all_dists = t[name]['DISTANCE'].unique()
-        m = len(keys)
-        n = len(all_dists)
-        for name2, group2 in group.groupby('DISTANCE'):
-            print('-----------Distance: %d, Sample: %d-----------' % (name2, len(group2)))
-            d_rssi = np.full([m, n], 0)
-            d_phase = np.full([m, n], 0)
-            for i in range(len(group2)):
-                s = group2.iloc[i]
-                d_r, d_p = classifier.distance_by_position(s['RSSI'], s['PHASE'], s['CHANNEL'], t)
+    matls = list(tmplts.keys())
+    print(matls)
+    for matl_test, g_matl_test in df_test.groupby('MATERIAL'):
+        print('\n----------------------------Material: %s----------------------------' % matl_test)
+        pos_set = tmplts[matl_test]['DISTANCE'].unique()
+        shape_tmplt = [len(matls), len(pos_set)]
+        for pos_test, g_pos_test in g_matl_test.groupby('DISTANCE'):
+            print('-----------Relative Position: %d, Test Data#: %d-----------' % (pos_test, len(g_pos_test)))
+            d_rssi = np.full(shape_tmplt, 0)
+            d_phase = np.full(shape_tmplt, 0)
+            for index, row in g_pos_test.iterrows():
+                d_r, d_p = classifier.distance_by_position(row['RSSI'], row['PHASE'], row['CHANNEL'], tmplts, shape_tmplt)
                 d_rssi = np.add(d_rssi, d_r)
                 d_phase = np.add(d_phase, d_p)
 
-            d = np.add(w_r*d_rssi, w_p*d_phase)
-            d_min = np.min(d, 1)
-            d_argmin = np.argmin(d, 1)
-            guess = np.argmin(d_min)
-            guess_index = np.argmin(d, 1)
+            corr = classifier.pos_coor(g_pos_test, tmplts, shape_tmplt)
+            # w_r_corr = 6*(1-corr)**1.5 + 1
+            w_r_corr = np.heaviside(corr-0.7, 0)*1+(1-np.heaviside(corr-0.7, 0))*10**(5*(0.85-corr))
+            d_joint = np.add(w_r*w_r_corr*d_rssi, w_p*d_phase)
+            d_min = np.min(d_joint, 1)
 
-            result = (keys[guess] == name)
-            print('result: %s, guess index: %s\n distance: %s\nrssi distance: %s\nphase distance: %s' %
-                  (result, guess_index,
-                   str(d_min),
-                   str(d_rssi[list(np.arange(m)), np.argmin(d, 1)]),
-                   str(d_phase[list(np.arange(m)), np.argmin(d, 1)])))
-
-            # rank_r = d_rssi.argsort()
-            # rank_r = rank_r.argsort()
-            # result_p = (keys[guess] == name)
-            # rank_p = d_phase.argsort()
-            # rank_p = rank_p.argsort()
+            pos_guess = np.argmin(d_joint, 1)
+            pos_guess_coord = list(np.arange(len(matls))), pos_guess
+            matl_guess = matls[np.argmin(d_min)]
+            result = (matl_guess == matl_test)
+            print('result: %s\nrelative position inferred for each material: %s\njoint distance: %s\nrssi distance: %s\nphase distance: %s\n' %
+                  (result, pos_guess, str(d_min), str(d_rssi[pos_guess_coord]), str(d_phase[pos_guess_coord])))
 
 
-test_dist1_data()
+# test_random_batch_data()
+test_pos_by_pos()
+# format_static_test_data()
