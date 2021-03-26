@@ -1,0 +1,92 @@
+['empty', 'oil2', 'vinegar', 'water']
+
+----------------------------Material: empty----------------------------
+-----------Relative Position: 61, Test Data#: 542-----------
+result: True
+relative position inferred for each material: [ 57 119 117 118]
+joint distance: [ 189.82255851 3336.60162817 1165.01562977 4528.05878067]
+rssi distance: [ 187.0024703  2932.5034305   872.74785724 4321.64870713]
+phase distance: [  2.82008821 404.09819768 292.26777253 206.41007355]
+
+-----------Relative Position: 71, Test Data#: 534-----------
+result: True
+relative position inferred for each material: [ 70 119 115 115]
+joint distance: [  169.33920983  7341.06940204  2778.88571751 11747.83453148]
+rssi distance: [  132.35359096  7120.46943684   311.77775831 11614.27134158]
+phase distance: [ 36.98561888 220.5999652   60.92807552 133.56318991]
+
+-----------Relative Position: 105, Test Data#: 492-----------
+result: True
+relative position inferred for each material: [ 87 119 116 118]
+joint distance: [  130.80482763 20728.01587733  4977.79674831 24528.92729113]
+rssi distance: [  120.15254102 20449.6678598   4835.73761214 23990.94082628]
+phase distance: [ 10.65228661 278.34801752 142.05913617 537.98646485]
+
+
+----------------------------Material: oil2----------------------------
+-----------Relative Position: 61, Test Data#: 514-----------
+result: True
+relative position inferred for each material: [ 8 58 22 28]
+joint distance: [ 537.06531319   98.89166026  322.88573718 1589.9620739 ]
+rssi distance: [285.85211896  97.67317412 214.08177558 494.80361497]
+phase distance: [ 251.21319423    1.21848614  108.80396161 1095.15845893]
+
+-----------Relative Position: 71, Test Data#: 511-----------
+result: True
+relative position inferred for each material: [ 29  72  24 111]
+joint distance: [5607.00748584  102.8372249  6536.11311808 7990.21498025]
+rssi distance: [3816.0672226    90.8902683   526.65778989 4499.17232445]
+phase distance: [1790.94026324   11.9469566  1227.72977807 3491.0426558 ]
+
+-----------Relative Position: 105, Test Data#: 758-----------
+result: True
+relative position inferred for each material: [ 37 104  34 118]
+joint distance: [3404.75848675  168.88498416  927.12655396 3211.80296881]
+rssi distance: [2086.05980296  166.1893805   366.81761043 2819.54595318]
+phase distance: [1318.69868379    2.69560367  560.30894353  392.25701563]
+
+
+----------------------------Material: vinegar----------------------------
+-----------Relative Position: 61, Test Data#: 522-----------
+result: True
+relative position inferred for each material: [ 34  74  61 113]
+joint distance: [2324.76862627 4871.22895789 1941.89588473 2314.08265633]
+rssi distance: [  93.22006175 4623.96467148  175.17392949  502.35129478]
+phase distance: [2231.54856452  247.26428641  905.72504651 1811.73136155]
+
+-----------Relative Position: 71, Test Data#: 516-----------
+result: True
+relative position inferred for each material: [ 41  62  70 119]
+joint distance: [6.96607904e+02 2.31356933e+05 1.85865690e+02 1.07260320e+04]
+rssi distance: [   85.87191657 20739.99993257   158.13913314   684.18052332]
+phase distance: [  49.98492829 3880.49889764   27.72655678  263.62630237]
+
+-----------Relative Position: 105, Test Data#: 486-----------
+result: True
+relative position inferred for each material: [ 95 109 104 102]
+joint distance: [ 7705.79172768 10746.72870483   300.74400968  6904.35841938]
+rssi distance: [7222.85150022 9327.85204767  287.7549643  6590.28282582]
+phase distance: [ 482.94022746 1418.87665717   12.98904538  314.07559356]
+
+
+----------------------------Material: water----------------------------
+-----------Relative Position: 61, Test Data#: 528-----------
+result: True
+relative position inferred for each material: [14 93 56 59]
+joint distance: [13773.0947801   6529.06434299  8812.03851887   824.48949056]
+rssi distance: [ 393.39065087 6488.36558031 8707.08692328  756.07283467]
+phase distance: [469.76412237  40.69876268 104.95159559  68.41665588]
+
+-----------Relative Position: 71, Test Data#: 520-----------
+result: True
+relative position inferred for each material: [ 16 110  38  38]
+joint distance: [51909.36226976 26030.49139478  1813.90683475   627.89716985]
+rssi distance: [ 789.56018672 2362.25243814 1697.87488779  578.99738091]
+phase distance: [4368.33608808 1877.08883489  116.03194697   48.89978894]
+
+-----------Relative Position: 105, Test Data#: 489-----------
+result: True
+relative position inferred for each material: [16 92 53 72]
+joint distance: [8193.85750731 1475.64351092  464.33747311  249.53971518]
+rssi distance: [4640.21708337  598.57214188  420.57150931  184.55322771]
+phase distance: [3553.64042393  877.07136904   43.7659638    64.98648747]
