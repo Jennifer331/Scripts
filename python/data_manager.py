@@ -10,6 +10,7 @@ folder_clean = 'd:\\Atom\\python\\data\\cleaned'
 folder_clean_mr = 'd:\\Atom\\python\\data\\cleaned\\mr'
 folder_clean_open = 'd:\\Atom\\python\\data\\cleaned\\open'
 folder_clean_sheet = 'd:\\Atom\\python\\data\\cleaned\\sheet'
+folder_clean_sheet_grill = 'd:\\Atom\\python\\data\\cleaned\\sheet\\grill'
 folder_mr = 'd:\\Atom\\exp\\20210307'
 folder_open = 'd:\\Atom\\exp\\20210313'
 folder_open_test = 'D:\\Atom\\python\\data\\test'
@@ -23,6 +24,7 @@ file_summary = 'log_summary.csv'
 epc = {'liquid': '3008 33B2 DDD9 0140 0000 0000',
        'water': '3008 33B2 DDD9 0140 0000 0020',
        'empty': '3008 33B2 DDD9 0140 0000 0030',
+       'oil': '3008 33B2 DDD9 0140 0000 0040',
        'oil2': '3008 33B2 DDD9 0140 0000 0040',
        'vinegar': '3008 33B2 DDD9 0140 0000 0060',
        'water2': '3008 33B2 DDD9 0140 0000 0080'}
