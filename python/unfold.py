@@ -6,11 +6,11 @@ import data_manager as dm
 
 
 def unfold_acc_dist(data, res):
-    for i in range(1, len(data)):
-        col_dist_index = data.columns.get_loc('DISTANCE')
-        col_freq_index = data.columns.get_loc('CHANNEL')
-        col_phase_index = data.columns.get_loc('PHASE')
+    col_dist_index = data.columns.get_loc('DISTANCE')
+    col_freq_index = data.columns.get_loc('CHANNEL')
+    col_phase_index = data.columns.get_loc('PHASE')
 
+    for i in range(1, len(data)):
         d_delta = data.iloc[i][col_dist_index] - data.iloc[i - 1][col_dist_index]
         p_delta = data.iloc[i][col_phase_index] - data.iloc[i - 1][col_phase_index]
         wavelength_max = 0.33
