@@ -7,6 +7,10 @@ def atten_coeff(f=902.75*10**6, permittivity=80, loss_tan=0.05, permeability=1):
     return 2 * np.pi * f * np.sqrt(permeability*permittivity*(np.sqrt(1+loss_tan**2)-1)/2) / constants.speed_of_light
 
 
+def phase_coeff(f=902.75*10**6, permittivity=80, loss_tan=0.05, permeability=1):
+    return 2 * np.pi * f * np.sqrt(permeability*permittivity*(np.sqrt(1+loss_tan**2)+1)/2) / constants.speed_of_light
+
+
 def attenuate(d, f=902.75*10**6, permittivity=80, loss_tan=0.05, permeability=1):
     return np.e**(d*-atten_coeff(f, permittivity, loss_tan, permeability))
 
@@ -21,4 +25,10 @@ def refl_coeff(z_from, z_to):
 
 def z(permittivity=80):
     return 377/np.sqrt(permittivity)
+
+
+def n(permittivity=80, loss_tan=0.05, permeability=1):
+    return np.sqrt(permeability * permittivity * (np.sqrt(1 + loss_tan ** 2) + 1) / 2)
+
+
 

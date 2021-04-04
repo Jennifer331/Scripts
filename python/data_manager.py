@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import re
 from scipy.io import savemat
+from collections import defaultdict
 
 folder_liquid = 'd:\\Atom\\exp\\20210218'
 folder_test = 'd:\\Atom\\python\\test_data\\empty'
@@ -118,3 +119,29 @@ def get_templates(func='cubic'):
         for key in store.keys():
             templates[key[1:]] = store.get(key)
     return templates
+
+
+def import_all_clean_data():
+    vinegar = defaultdict(lambda: None)
+    water = defaultdict(lambda: None)
+    oil = defaultdict(lambda: None)
+    empty = defaultdict(lambda: None)
+
+    vinegar['lab'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\nongfu_vinegar_2d_unwrap.csv')
+    water['lab'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\nongfu_water_2d_unwrap.csv')
+    oil['lab'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\nongfu_oil_2d_unwrap.csv')
+    empty['lab'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\nongfu_empty_2d_unwrap.csv')
+
+    vinegar['mr'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\mr\\mr_vinegar_2d_cus_unwrap.csv')
+    water['mr'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\mr\\mr_water_2d_cus_unwrap.csv')
+    oil['mr'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\mr\\mr_oil_2d_cus_unwrap.csv')
+    vinegar['mr'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\mr\\mr_vinegar_2d_cus_unwrap.csv')
+
+    vinegar['open'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\open\\open_vinegar_2d_cus_unwrap.csv')
+    water['open'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\open\\open_water_2d_cus_unwrap.csv')
+    oil['open'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\open\\open_oil2_2d_cus_unwrap.csv')
+    empty['open'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\open\\open_empty_2d_cus_unwrap.csv')
+
+    oil['outdoor'] = pd.read_csv('D:\\Atom\\python\\data\\cleaned\\outdoor\\outdoor_oil_2d_cus_unwrap.csv')
+
+    return vinegar, water, oil, empty
