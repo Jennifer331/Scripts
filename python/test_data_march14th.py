@@ -4,9 +4,12 @@ import os
 import pandas as pd
 import numpy as np
 import re
+import json
 
 import data_manager as dm
 import rfid_liquid_classification as classifier
+
+from collections import defaultdict
 
 w_r = classifier.w_r
 w_p = classifier.w_p
@@ -100,6 +103,56 @@ def batch_test():
         test_random_batch_data(genre=g[np.random.randint(2)])
 
 
+def classify(tmplts, test):
+    matls = list(tmplts.keys())
+    pos_set = tmplts[matls[0]]['DISTANCE'].unique()
+    shape_tmplt = [len(matls), len(pos_set)]
+    d_rssi = np.full(shape_tmplt, 0)
+    d_phase = np.full(shape_tmplt, 0)
+    for index, row in test.iterrows():
+        d_r, d_p = classifier.distance_by_position(row['RSSI'], row['PHASE'], row['CHANNEL'], tmplts, shape_tmplt)
+        d_rssi = np.add(d_rssi, d_r)
+        d_phase = np.add(d_phase, d_p)
+
+    corr = classifier.pos_coor(test, tmplts, shape_tmplt)
+    w_r_corr = np.heaviside(corr - 0.7, 0) * 1 + (1 - np.heaviside(corr - 0.7, 0)) * 10 ** (5 * (0.85 - corr))
+    d_joint = np.add(w_r * w_r_corr * d_rssi, w_p * d_phase)
+    d_min = np.min(d_joint, 1)
+
+    pos_guess = np.argmin(d_joint, 1)
+    matl_guess = matls[np.argmin(d_min)]
+
+    return pos_guess[np.argmin(d_min)], matl_guess
+
+
+def test_all():
+    tmplts = dm.get_templates()
+    folder = 'D:\\Atom\\exp\\20210313'
+    filename = 'open_%s_[0-9]*cm.csv'
+
+    dists = []
+    matls = []
+    pos_guesses = []
+    matl_guesses = []
+
+    for matl in ['vinegar', 'empty', 'water', 'oil2']:
+        for file in glob.glob(os.path.join(folder, filename % matl)):
+            dis = int(re.search('_[0-9]*cm.csv', file).group()[1:4])
+            print(file, dis)
+            if dis < 30 or dis >= 150:
+                continue
+            test = dm.import_from_file(file, dm.epc[matl])
+            pos_guess, matl_guess = classify(tmplts, test)
+            print(dis, matl, pos_guess, matl_guess)
+            dists.append(dis)
+            matls.append(matl)
+            pos_guesses.append(pos_guess)
+            matl_guesses.append(matl_guess)
+
+    df = pd.DataFrame({'POSITION': dists, 'MATERIALS': matls, 'GUESSED POS': pos_guesses, 'GUESSED': matl_guesses})
+    df.to_csv('result.csv', index=False)
+
+
 def test_pos_by_pos():
     df_test = dm.import_static_test_data(dm.folder_open_test, 'open_test_data_static.csv')
     tmplts = dm.get_templates()
@@ -134,5 +187,12 @@ def test_pos_by_pos():
 
 
 # test_random_batch_data()
-test_pos_by_pos()
+# test_pos_by_pos()
 # format_static_test_data()
+
+
+# tmplts = dm.get_templates()
+# test = dm.import_from_file('D:\\Atom\\exp\\20210313\\open_water_030cm.csv', dm.epc_empty)
+# pos_guess, matl_guess = classify(tmplts, test)
+
+test_all()
