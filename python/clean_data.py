@@ -76,6 +76,7 @@ def clean_merge_dists(folder_i, file, epc, folder_o, label, dist_off=0):
     for file in glob.glob(os.path.join(folder_i, file)):
         dis_sub_str = re.search(pattern, file).group(0)
         dis = ''.join([n for n in dis_sub_str if n.isdigit()])
+        print(file, int(dis))
         try:
             df = pd.read_csv(file).groupby('EPC').get_group(epc).drop(columns=['EPC'])
             df = kde_peak(df)
@@ -99,8 +100,8 @@ def unwrap(folder_i, file, folder_o, label):
     df_unwrap = unfold_helper.unfold(df)
     df_unwrap['DISTANCE'] *= 100
     df_unwrap['CHANNEL'] /= 10**6
-    dm.to_csv(df_unwrap, folder_o, '%s_2d_cus_unwrap.csv' % label)
-    dm.export_mat(df_unwrap, '%s_2d_cus_unwrap.mat' % label, folder=folder_o)
+    dm.to_csv(df_unwrap, folder_o, '%s_unwrap.csv' % label)
+    dm.export_mat(df_unwrap, '%s_unwrap.mat' % label, folder=folder_o)
 
 
 if __name__ == '__main__':
