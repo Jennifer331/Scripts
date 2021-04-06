@@ -28,14 +28,15 @@ legend(l)
 hold off
 disp('figured drawn!')
 %% »æÖÆfront-tail
-figure(2)
+figure(3)
+color=[79/255 129/255 189/255;192/255 80/255 77/255;155/255 187/255 89/255;128/255 100/255 162/255;75/255 172/255 198/255;1 0.5 1; 0 0 0.5; 0.5 0 0;0 0.5 0;1 0.5 0.5; 0.5 1 0.5;0.5 0.5 1;1 1 0;0 1 1;1 0 1];
 
 marker = ["x", "o", ".", ">"];
 l = [];
 for i = 1:4
     label = matls(i);
     l = [l, label];
-    eval(sprintf('plot3(%s_t_d, %s_t_f, %s_f_p - %s_t_p, "%s")', label, label, label, label, marker(i)));
+    eval(sprintf('plot3(%s_t_d, %s_t_f, %s_f_p - %s_t_p, "%s", "Color", color(i,:))', label, label, label, label, marker(i)));
     hold on
 end
 legend(l)
