@@ -187,7 +187,7 @@ def test_pos_by_pos():
 
 
 # test_random_batch_data()
-# test_pos_by_pos()
+test_pos_by_pos()
 # format_static_test_data()
 
 
@@ -195,4 +195,4 @@ def test_pos_by_pos():
 # test = dm.import_from_file('D:\\Atom\\exp\\20210313\\open_water_030cm.csv', dm.epc_empty)
 # pos_guess, matl_guess = classify(tmplts, test)
 
-test_all()
+# test_all()
