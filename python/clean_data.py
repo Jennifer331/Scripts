@@ -104,6 +104,28 @@ def unwrap(folder_i, file, folder_o, label):
     dm.export_mat(df_unwrap, '%s_unwrap.mat' % label, folder=folder_o)
 
 
+def align(df1, df2):
+    dists = set(df1['DISTANCE'].unique()) & set(df2['DISTANCE'].unique())
+    freqs = set(df1['CHANNEL'].unique()) & set(df2['CHANNEL'].unique())
+
+    combined = [dists, freqs]
+    cols = ['DISTANCE', 'CHANNEL']
+
+    mind = pd.MultiIndex.from_product(combined, names=cols)
+
+    append_df1 = df1.set_index(cols).reindex(mind, fill_value=np.nan)
+    append_df2 = df2.set_index(cols).reindex(mind, fill_value=np.nan)
+
+    index = (~np.isnan(append_df1['RSSI'])) & (~np.isnan(append_df2['RSSI']))
+
+    filtered_df1 = append_df2[index]
+    filtered_df2 = append_df2[index]
+
+    return filtered_df1, filtered_df2
+
+
+def align()
+
 if __name__ == '__main__':
     data_frame = import_data()
     cleaned = kde_peak(data_frame)
