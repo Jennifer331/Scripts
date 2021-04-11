@@ -124,7 +124,7 @@ def align(df1, df2):
     return filtered_df1, filtered_df2
 
 
-def align()
+# def align()
 
 if __name__ == '__main__':
     data_frame = import_data()
