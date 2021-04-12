@@ -10,13 +10,14 @@ import data_manager as dm
 import clean_data as cleaner
 
 folder = 'D:\\Atom\\exp\\20210411'
+folder = 'D:\\Atom\\exp\\20210411\\angle'
 folder_clean = 'D:\\Atom\\python\\data\\cleaned\\grill\\final'
 
 
 def clean():
-    for file in glob.glob(os.path.join(folder, 'd11_water_*.csv')):
+    for file in glob.glob(os.path.join(folder, '*.csv')):
         print(file)
-        matl = re.search('d11_[a-z]*_', file).group()[4:-1]
+        matl = re.search('d[0-9]{3}_[a-z]*_', file).group()[5:-1]
         df = dm.import_from_file(file, dm.epc[matl])
         df = cleaner.kde_peak(df)
 
