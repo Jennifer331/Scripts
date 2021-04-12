@@ -41,7 +41,9 @@ epc = {'liquid': '3008 33B2 DDD9 0140 0000 0000',
        'cola': '3008 33B2 DDD9 0140 0000 0600',
 
        'waterrotate': '3008 33B2 DDD9 0140 0000 1000',
-       'watertag': '3008 33B2 DDD9 0140 0000 2000'
+       'watertag': '3008 33B2 DDD9 0140 0000 2000',
+       'watertag': '3008 33B2 DDD9 0140 0000 0000',
+       'watercomm': '3008 33B2 DDD9 0140 0000 0000'
         }
 
 epc_liquid = '3008 33B2 DDD9 0140 0000 0000'
