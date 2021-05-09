@@ -7,9 +7,9 @@ dists =[1 6 7];
 markers = ["o-", "*-", ".-"];
 %% Phase
 figure(1)
-hold on
 for i=1:2
     eval(sprintf("plot(freqs, unwrap(d%d_cola_phase_f), markers(%d), 'color', colors(1,:), 'MarkerSize', 10)", dists(i), i))
+hold on
     eval(sprintf("plot(freqs, unwrap(d%d_cola_phase_t), markers(%d)+'-', 'color', colors(1,:), 'MarkerSize', 10)", dists(i), i))
     eval(sprintf("plot(freqs, unwrap(d%d_colanosugar_phase_f), markers(%d), 'color', colors(2,:), 'MarkerSize', 10)", dists(i), i))
     eval(sprintf("plot(freqs, unwrap(d%d_colanosugar_phase_t), markers(%d)+'-', 'color', colors(2,:), 'MarkerSize', 10)", dists(i), i))
@@ -20,9 +20,9 @@ legend('有糖-位置1-正', '有糖-位置1-反', '无糖-位置1-正', '无糖-位置1-反', '有糖
 xlabel('频道/（MHz）', 'FontSize', 30)
 ylabel('相位/（rad）', 'FontSize', 30)
 
-% set(gcf, 'PaperPosition', [0 0 24 18])
-% set(gcf, 'PaperSize', [24 18])
-% saveas(gcf, 'D:\研究生\毕业设计\论文\图\重绘\cola_phase.pdf')
+set(gcf, 'PaperPosition', [0 0 24 18])
+set(gcf, 'PaperSize', [24 18])
+saveas(gcf, 'D:\研究生\毕业设计\论文\图\重绘\cola_phase.pdf')
 %% RSSI
 figure(2)
 for i=1:2
@@ -46,9 +46,9 @@ ylabel('接收信号强度/（dBm）', 'FontSize', 30)
 figure(3)
 
 markers = ["o", "^",  "*", "p", ".", "<"];
-hold on
 for i=1:3
     eval(sprintf("plot(unwrap(d%d_cola_phase_f) - unwrap(d%d_cola_phase_t), d%d_cola_rssi_f - d%d_cola_rssi_t, markers(%d), 'color', colors(1,:), 'MarkerSize', 10)", dists(i),dists(i), dists(i), dists(i), 2*i-1))
+    hold on
     eval(sprintf("plot(unwrap(d%d_colanosugar_phase_f) - unwrap(d%d_colanosugar_phase_t), d%d_colanosugar_rssi_f - d%d_colanosugar_rssi_t, markers(%d), 'color', colors(2,:), 'MarkerSize', 10)", dists(i),dists(i), dists(i), dists(i), 2*i))
 end
 hold off
