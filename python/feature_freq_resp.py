@@ -155,18 +155,18 @@ def empty():
 
 # empty()
 # vinegar()
-# oil()
+oil()
 # water()
 # outdoor()
 
-d = 1
-matl = 'oil'
-
-df_h = pd.read_csv(os.path.join(folder_final, 'd%d_%s_f_kde.csv' % (d, matl)))
-df_t = pd.read_csv(os.path.join(folder_final, 'd%d_%s_t_kde.csv' % (d, matl)))
-
-
-plt.plot(df_h['CHANNEL'], df_h['PHASE'])
-plt.plot(df_t['CHANNEL'], df_t['PHASE'])
-
-plt.show()
+# d = 1
+# matl = 'oil'
+#
+# df_h = pd.read_csv(os.path.join(folder_final, 'd%d_%s_f_kde.csv' % (d, matl)))
+# df_t = pd.read_csv(os.path.join(folder_final, 'd%d_%s_t_kde.csv' % (d, matl)))
+#
+#
+# plt.plot(df_h['CHANNEL'], df_h['PHASE'])
+# plt.plot(df_t['CHANNEL'], df_t['PHASE'])
+#
+# plt.show()

@@ -4,6 +4,8 @@ import pandas as pd
 import re
 from scipy.io import savemat
 from collections import defaultdict
+import joblib
+import pickle
 
 folder_liquid = 'd:\\Atom\\exp\\20210218'
 folder_test = 'd:\\Atom\\python\\test_data\\empty'
@@ -134,6 +136,16 @@ def get_templates(func='cubic'):
         for key in store.keys():
             templates[key[1:]] = store.get(key)
     return templates
+
+
+def get_classifier():
+    return joblib.load('d:\\atom\\python\\jupter\\实验分析\\model_all.joblib')
+
+
+def get_features():
+    with open('d:\\atom\\python\\jupter\\实验分析\\features.txt', 'rb') as f:
+        features = pickle.load(f)
+    return features
 
 
 def import_all_clean_data():
