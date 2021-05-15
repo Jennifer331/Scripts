@@ -92,8 +92,9 @@ def clear():
 def on_press(key):
     global marker_size
     try:
-        if key.char == 'c':
+        if key.char == 'c' or 'h' or 't':
             clear()
+            result['text'] = '识别结果……'
         elif key.char == 'r':
             reload()
         elif marker_adjustable and key.char == 'a':
@@ -177,10 +178,12 @@ t_receive.start()
 def plot_update(frame_number):
     ax1.clear()
     ax2.clear()
-    ax1.set_title('接收信号强度')
+    # ax1.set_title('接收信号强度')
+    ax1.set_ylabel('接收信号强度')
     ax1.set_xlim(min(frequencies), max(frequencies))
     ax1.set_ylim(auto=True)
-    ax2.set_title('相位')
+    # ax2.set_title('相位')
+    ax2.set_ylabel('相位')
     ax2.set_ylim(0, 7)
     ax2.set_xlim(min(frequencies), max(frequencies))
     with lock:
@@ -239,23 +242,23 @@ def identify():
 
 root = tk.Tk()
 root.wm_title('液体识别')
-fig = plt.figure()
+fig = plt.figure(figsize=(6, 4))
 canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().grid(column=0, row=1, columnspan=4, ipadx=40, ipady=20)
+canvas.get_tk_widget().grid(column=0, row=1, columnspan=2, ipadx=40, ipady=40)
 
 myFont = tk.font.Font(family='Helvetica', size=20, weight='bold')
 
-front = tk.Button(root, text='正面', command=collect_front_data, font=myFont)
-front.grid(column=0, row=0)
-
-tail = tk.Button(root, text='反面', command=collect_tail_data, font=myFont)
-tail.grid(column=1, row=0)
+# front = tk.Button(root, text='正面', command=collect_front_data, font=myFont)
+# front.grid(column=0, row=0)
+#
+# tail = tk.Button(root, text='反面', command=collect_tail_data, font=myFont)
+# tail.grid(column=1, row=0)
 
 start = tk.Button(root, text='识别', command=identify, font=myFont)
-start.grid(column=2, row=0)
+start.grid(column=0, row=0)
 
 result = tk.Label(root, text='识别结果……', font=myFont)
-result.grid(column=3, row=0)
+result.grid(column=1, row=0)
 
 ax1 = plt.subplot(2, 1, 1)
 ax2 = plt.subplot(2, 1, 2)
@@ -263,7 +266,7 @@ ax2 = plt.subplot(2, 1, 2)
 fig.canvas.mpl_connect('pick_event', on_pick)
 animation = FuncAnimation(fig, plot_update, interval=10)
 fig.tight_layout()
-plt.subplots_adjust(right=0.7)
+plt.subplots_adjust(left=0.125, right=0.7)
 
 # plt.show()
 tk.mainloop()
